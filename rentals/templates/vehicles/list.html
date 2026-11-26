@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Our Vehicles | RentFlow{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Explore Our Fleet</h1>
+    <p class="text-gray-500 mt-2">Find a vehicle that suits your journey.</p>
+</div>
+
+<form method="get" class="bg-white border border-gray-200 rounded-xl p-5 mb-8">
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="Search make or model..."
+            class="border border-gray-300 rounded-lg px-4 py-3">
+
+        <select name="category" class="border border-gray-300 rounded-lg px-4 py-3">
+
+            <option value="">All categories</option>
+
+            {% for value,label in categories %}
+            <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>
+                {{ label }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+        <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white rounded-lg py-3">
+            Search Vehicles
+        </button>
+
+    </div>
+
+</form>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    {% for vehicle in vehicles %}
+
+    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+
+        <div class="h-40 bg-gray-100 flex items-center justify-center">
+            <span class="text-5xl">🚘</span>
+        </div>
+
+        <div class="p-5">
+
+            <h2 class="font-bold text-xl">
+                {{ vehicle.make }} {{ vehicle.model }}
+            </h2>
+
+            <p class="text-gray-500 text-sm mt-2">
+                {{ vehicle.year }} · {{ vehicle.get_category_display }}
+            </p>
+
+            <p class="text-blue-700 font-bold text-xl mt-4">
+                KSh {{ vehicle.daily_rate|floatformat:2 }}
+                <span class="text-sm text-gray-500 font-normal">/ day</span>
+            </p>
+
+            <p class="text-sm text-gray-500 mt-2">
+                {{ vehicle.description|default:"No description available." }}
+            </p>
+
+            <a href="{% url 'rental_request_vehicle' vehicle.pk %}"
+                class="block text-center bg-blue-700 hover:bg-blue-800 text-white rounded-lg py-2 mt-5">
+                Request Rental
+            </a>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="col-span-full bg-white border border-gray-200 rounded-xl p-10 text-center">
+        <h2 class="font-semibold text-lg">No vehicles found</h2>
+        <p class="text-gray-500 mt-2">Try adjusting your search filters.</p>
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

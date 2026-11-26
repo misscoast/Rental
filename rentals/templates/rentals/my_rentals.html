@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}My Rentals | RentFlow{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">My Rentals</h1>
+    <p class="text-gray-500 mt-2">Track your rental requests and history.</p>
+</div>
+
+<div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+
+    <div class="overflow-x-auto">
+
+        <table class="w-full text-sm text-left">
+
+            <thead class="bg-gray-50 text-gray-500">
+                <tr>
+                    <th class="px-5 py-4">Rental ID</th>
+                    <th class="px-5 py-4">Vehicle</th>
+                    <th class="px-5 py-4">Start Date</th>
+                    <th class="px-5 py-4">Expected Return</th>
+                    <th class="px-5 py-4">Total</th>
+                    <th class="px-5 py-4">Status</th>
+                    <th class="px-5 py-4">Payment</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-100">
+
+                {% for rental in rentals %}
+
+                <tr>
+                    <td class="px-5 py-4 font-medium">
+                        {{ rental.rental_id }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {{ rental.vehicle.make }} {{ rental.vehicle.model }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {{ rental.start_date }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {{ rental.expected_return_date }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        KSh {{ rental.total_cost|floatformat:2 }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {{ rental.get_status_display }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {% if rental.is_paid %}
+                        <span class="text-green-700 font-medium">Paid</span>
+                        {% elif rental.status == "COMPLETED" %}
+                        <span class="text-red-700 font-medium">Unpaid</span>
+                        {% else %}
+                        <span class="text-gray-500">Pending</span>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="7" class="px-5 py-10 text-center text-gray-500">
+                        You have not made any rental requests yet.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

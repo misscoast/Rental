@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Reports | RentFlow{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Business Reports</h1>
+    <p class="text-gray-500 mt-2">Fleet performance, rental activity and revenue.</p>
+</div>
+
+<h2 class="text-xl font-bold mb-4">Fleet Overview</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+
+    <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <p class="text-gray-500 text-sm">Total vehicles</p>
+        <p class="text-3xl font-bold mt-2">{{ total_vehicles }}</p>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <p class="text-gray-500 text-sm">Available</p>
+        <p class="text-3xl font-bold text-green-700 mt-2">{{ available_vehicles }}</p>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <p class="text-gray-500 text-sm">Rented</p>
+        <p class="text-3xl font-bold mt-2">{{ rented_vehicles }}</p>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <p class="text-gray-500 text-sm">Under maintenance</p>
+        <p class="text-3xl font-bold mt-2">{{ maintenance_vehicles }}</p>
+    </div>
+
+</div>
+
+<h2 class="text-xl font-bold mb-4">Rental Overview</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-10">
+
+    <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <p class="text-gray-500 text-sm">Total rentals</p>
+        <p class="text-2xl font-bold mt-2">{{ total_rentals }}</p>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <p class="text-gray-500 text-sm">Pending</p>
+        <p class="text-2xl font-bold mt-2">{{ pending_rentals }}</p>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <p class="text-gray-500 text-sm">Active</p>
+        <p class="text-2xl font-bold mt-2">{{ active_rentals }}</p>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <p class="text-gray-500 text-sm">Completed</p>
+        <p class="text-2xl font-bold mt-2">{{ completed_rentals }}</p>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <p class="text-gray-500 text-sm">Cancelled</p>
+        <p class="text-2xl font-bold mt-2">{{ cancelled_rentals }}</p>
+    </div>
+
+</div>
+
+<h2 class="text-xl font-bold mb-4">Revenue</h2>
+
+<div class="bg-white border border-gray-200 rounded-xl p-6 mb-8">
+
+    <p class="text-gray-500 text-sm">Total recorded revenue</p>
+
+    <p class="text-4xl font-bold text-green-700 mt-2">
+        KSh {{ total_revenue|floatformat:2 }}
+    </p>
+
+    <p class="text-sm text-gray-500 mt-2">
+        {{ payment_count }} successful payment records.
+    </p>
+
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+        <h2 class="text-xl font-bold mb-5">Revenue by Payment Method</h2>
+
+        <div class="space-y-4">
+
+            {% for item in revenue_by_method %}
+
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+
+                <div>
+                    <p class="font-medium">{{ item.method }}</p>
+                    <p class="text-sm text-gray-500">
+                        {{ item.count }} payments
+                    </p>
+                </div>
+
+                <p class="font-semibold">
+                    KSh {{ item.total|floatformat:2 }}
+                </p>
+
+            </div>
+
+            {% empty %}
+
+            <p class="text-gray-500">No successful payments yet.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+        <h2 class="text-xl font-bold mb-5">Most Rented Vehicles</h2>
+
+        <div class="space-y-4">
+
+            {% for vehicle in popular_vehicles %}
+
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+
+                <div>
+                    <p class="font-medium">
+                        {{ vehicle.make }} {{ vehicle.model }}
+                    </p>
+
+                    <p class="text-sm text-gray-500">
+                        {{ vehicle.registration_number }}
+                    </p>
+                </div>
+
+                <p class="font-semibold">
+                    {{ vehicle.rental_count }} rentals
+                </p>
+
+            </div>
+
+            {% empty %}
+
+            <p class="text-gray-500">No rental data available.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="bg-white border border-gray-200 rounded-xl overflow-hidden mt-8">
+
+    <div class="p-6 border-b border-gray-200">
+        <h2 class="text-xl font-bold">Recent Payments</h2>
+    </div>
+
+    <div class="overflow-x-auto">
+
+        <table class="w-full text-sm text-left">
+
+            <thead class="bg-gray-50 text-gray-500">
+                <tr>
+                    <th class="px-5 py-4">Payment ID</th>
+                    <th class="px-5 py-4">Customer</th>
+                    <th class="px-5 py-4">Method</th>
+                    <th class="px-5 py-4">Amount</th>
+                    <th class="px-5 py-4">Date</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-100">
+
+                {% for payment in recent_payments %}
+
+                <tr>
+                    <td class="px-5 py-4">{{ payment.payment_id }}</td>
+
+                    <td class="px-5 py-4">
+                        {{ payment.rental.customer.user.get_full_name|default:payment.rental.customer.user.username }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {{ payment.get_method_display }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        KSh {{ payment.amount|floatformat:2 }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {{ payment.created_at|date:"d M Y H:i" }}
+                    </td>
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="5" class="px-5 py-8 text-center text-gray-500">
+                        No payments recorded.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

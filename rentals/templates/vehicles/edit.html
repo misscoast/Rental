@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Vehicle | RentFlow{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto bg-white border border-gray-200 rounded-xl p-8">
+
+    <h1 class="text-2xl font-bold mb-2">Edit Vehicle</h1>
+
+    <p class="text-gray-500 mb-8">
+        Update {{ vehicle.make }} {{ vehicle.model }}.
+    </p>
+
+    <form method="post" class="space-y-5">
+
+        {% csrf_token %}
+
+        {% for field in form %}
+        <div>
+            <label class="block text-sm font-medium mb-2">
+                {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% for error in field.errors %}
+            <p class="text-sm text-red-600">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        <div class="flex gap-3">
+            <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-lg">
+                Save Changes
+            </button>
+
+            <a href="{% url 'manage_vehicles' %}" class="bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-lg">
+                Cancel
+            </a>
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
