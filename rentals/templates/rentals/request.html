@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Request Rental | RentFlow{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto bg-white border border-gray-200 rounded-xl p-8">
+
+    <h1 class="text-2xl font-bold mb-2">
+        {% if profile_form %}Complete Your Customer Profile{% else %}Request a Rental{% endif %}
+    </h1>
+
+    <p class="text-gray-500 mb-8">
+        {% if profile_form %}
+        Add your contact and driving licence details before requesting a rental.
+        {% else %}
+        Select a vehicle and provide your rental dates.
+        {% endif %}
+    </p>
+
+    <form method="post" class="space-y-5">
+
+        {% csrf_token %}
+
+        {% if profile_form.non_field_errors or form.non_field_errors %}
+        <div class="bg-red-100 text-red-800 p-3 rounded-lg">
+            {{ profile_form.non_field_errors }}
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% if profile_form %}
+        {% for field in profile_form %}
+        <div>
+            <label class="block text-sm font-medium mb-2">
+                {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% for error in field.errors %}
+            <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        {% else %}
+        {% for field in form %}
+        <div>
+            <label class="block text-sm font-medium mb-2">
+                {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% for error in field.errors %}
+            <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white py-3 rounded-lg font-semibold">
+            {% if profile_form %}Save Customer Profile{% else %}Submit Rental Request{% endif %}
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

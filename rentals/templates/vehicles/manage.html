@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Fleet | RentFlow{% endblock %}
+
+{% block content %}
+
+<div class="flex justify-between items-center mb-8">
+    <div>
+        <h1 class="text-3xl font-bold">Fleet Management</h1>
+        <p class="text-gray-500 mt-2">Add and manage rental vehicles.</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <div class="bg-white border border-gray-200 rounded-xl p-6">
+
+        <h2 class="text-xl font-bold mb-6">Add Vehicle</h2>
+
+        <form method="post" class="space-y-4">
+
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div>
+                <label class="block text-sm font-medium mb-2">
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% for error in field.errors %}
+                <p class="text-sm text-red-600">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white py-3 rounded-lg">
+                Add Vehicle
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="lg:col-span-2 bg-white border border-gray-200 rounded-xl overflow-hidden">
+
+        <div class="p-6 border-b border-gray-200">
+            <h2 class="text-xl font-bold">Vehicle Inventory</h2>
+        </div>
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full text-sm text-left">
+
+                <thead class="bg-gray-50 text-gray-500">
+                    <tr>
+                        <th class="px-5 py-4">Vehicle</th>
+                        <th class="px-5 py-4">Registration</th>
+                        <th class="px-5 py-4">Daily Rate</th>
+                        <th class="px-5 py-4">Status</th>
+                        <th class="px-5 py-4">Action</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-100">
+
+                    {% for vehicle in vehicles %}
+                    <tr>
+                        <td class="px-5 py-4 font-medium">
+                            {{ vehicle.make }} {{ vehicle.model }}
+                        </td>
+
+                        <td class="px-5 py-4">
+                            {{ vehicle.registration_number }}
+                        </td>
+
+                        <td class="px-5 py-4">
+                            KSh {{ vehicle.daily_rate|floatformat:2 }}
+                        </td>
+
+                        <td class="px-5 py-4">
+                            {{ vehicle.get_status_display }}
+                        </td>
+
+                        <td class="px-5 py-4">
+                            <a href="{% url 'edit_vehicle' vehicle.pk %}" class="text-blue-700 hover:underline">
+                                Edit
+                            </a>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-5 py-8 text-center text-gray-500">
+                            No vehicles have been added.
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

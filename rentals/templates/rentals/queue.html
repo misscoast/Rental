@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Rental Requests | RentFlow{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+    <h1 class="text-3xl font-bold">Rental Requests</h1>
+    <p class="text-gray-500 mt-2">Review and approve customer requests.</p>
+</div>
+
+<div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+
+    <div class="overflow-x-auto">
+
+        <table class="w-full text-sm text-left">
+
+            <thead class="bg-gray-50 text-gray-500">
+                <tr>
+                    <th class="px-5 py-4">Rental ID</th>
+                    <th class="px-5 py-4">Customer</th>
+                    <th class="px-5 py-4">Vehicle</th>
+                    <th class="px-5 py-4">Dates</th>
+                    <th class="px-5 py-4">Estimated Cost</th>
+                    <th class="px-5 py-4">Action</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-100">
+
+                {% for rental in rentals %}
+
+                <tr>
+
+                    <td class="px-5 py-4 font-medium">
+                        {{ rental.rental_id }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {{ rental.customer.user.get_full_name|default:rental.customer.user.username }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {{ rental.vehicle.make }} {{ rental.vehicle.model }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        {{ rental.start_date }} to {{ rental.expected_return_date }}
+                    </td>
+
+                    <td class="px-5 py-4">
+                        KSh {{ rental.total_cost|floatformat:2 }}
+                    </td>
+
+                    <td class="px-5 py-4">
+
+                        <form method="post" action="{% url 'approve_rental' rental.pk %}">
+
+                            {% csrf_token %}
+
+                            <button type="submit"
+                                class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg">
+                                Approve
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+                    <td colspan="6" class="px-5 py-10 text-center text-gray-500">
+                        There are no pending rental requests.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

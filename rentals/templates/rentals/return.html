@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Process Return | RentFlow{% endblock %}
+
+{% block content %}
+
+<div class="max-w-2xl mx-auto bg-white border border-gray-200 rounded-xl p-8">
+
+    <h1 class="text-2xl font-bold mb-2">Process Vehicle Return</h1>
+
+    <p class="text-gray-500 mb-6">
+        Rental {{ rental.rental_id }}
+    </p>
+
+    <div class="bg-gray-50 rounded-lg p-5 mb-8">
+
+        <p class="font-semibold">
+            {{ rental.vehicle.make }} {{ rental.vehicle.model }}
+        </p>
+
+        <p class="text-sm text-gray-500 mt-1">
+            Customer: {{ rental.customer.user.get_full_name|default:rental.customer.user.username }}
+        </p>
+
+        <p class="text-sm text-gray-500 mt-1">
+            Expected return: {{ rental.expected_return_date }}
+        </p>
+
+        <p class="text-sm text-gray-500 mt-1">
+            Agreed daily rate: KSh {{ rental.daily_rate_snapshot|floatformat:2 }}
+        </p>
+
+    </div>
+
+    <form method="post" class="space-y-5">
+
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="bg-red-100 text-red-800 p-3 rounded-lg">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for field in form %}
+
+        <div>
+            <label class="block text-sm font-medium mb-2">
+                {{ field.label }}
+            </label>
+
+            {{ field }}
+
+            {% for error in field.errors %}
+            <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        {% endfor %}
+
+        <button type="submit" class="w-full bg-blue-700 hover:bg-blue-800 text-white py-3 rounded-lg">
+            Complete Rental
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}
